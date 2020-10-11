@@ -17,7 +17,13 @@ const server = app.listen(app.get('port'), ()=>{
 
 //websockets
 const io = socket(server);
-io.on('connection', ()=> {
-  console.log('new connection');
-  
+io.on('connection', (socket)=> {
+  console.log('new connection', socket.id);
+  socket.on('chat:message', (data)=> {
+    io.sockets.emit('chat:message', data);
+  });
+
+  socket.on('chat:typing',(username)=>{
+    socket.broadcast.emit('chat:typing', username);
+  });
 });
